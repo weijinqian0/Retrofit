@@ -1,6 +1,7 @@
 package com.example.weijinqian.retrofit.network.rx;
 
 import com.example.weijinqian.retrofit.Function;
+import com.example.weijinqian.retrofit.network.Downloader;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.RunnableFuture;
@@ -72,12 +73,33 @@ public class RxCall<T> {
                 rxCall.enqueue(new CallBack<T>() {
                     @Override
                     public void onSuc(T response) {
-
+                        callBack.onSuc(function.apply(response));
                     }
 
                     @Override
                     public void onFail(int code, String message) {
+                        callBack.onFail(code, message);
+                    }
+                });
+            }
+        });
+    }
 
+    public <R> RxCall<R> flatmapping(final Function<T, RxCall<R>> function) {
+        final RxCall<T> readCall = this;
+
+        return RxCall.build(new ICall<R>() {
+            @Override
+            public void enqueue1(final CallBack<R> callback) {
+                readCall.enqueue(new CallBack<T>() {
+                    @Override
+                    public void onFail(int code, String message) {
+                        callback.onFail(code, message);
+                    }
+
+                    @Override
+                    public void onSuc(T response) {
+                        function.apply(response).enqueue(callback);
                     }
                 });
             }

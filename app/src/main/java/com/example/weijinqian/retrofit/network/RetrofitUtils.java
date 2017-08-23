@@ -27,7 +27,12 @@ public class RetrofitUtils {
      */
     private static Configuration configuration;
 
+    public static Configuration getConfiguration() {
+        return configuration;
+    }
+
     /**
+
      * 获取相同baseUrl的默认网络接口
      *
      * @return 网络接口
@@ -143,6 +148,14 @@ public class RetrofitUtils {
         private Configuration(Supplier<String> baseUrl, List<Interceptor> interceptors) {
             this.baseUrl = baseUrl;
             this.interceptors = interceptors;
+        }
+
+        public Supplier<String> getBaseUrl() {
+            return baseUrl;
+        }
+
+        public List<Interceptor> getInterceptors() {
+            return interceptors;
         }
 
         public static class Builder {

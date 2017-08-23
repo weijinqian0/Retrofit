@@ -9,6 +9,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.weijinqian.retrofit.network.Downloader;
+import com.example.weijinqian.retrofit.network.rx.CallBack;
+
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -24,6 +29,29 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+            }
+        });
+        // 下载对应的熊头文件
+        String fileName="file_name";
+        Downloader.Builder builder = new Downloader.Builder();
+        builder.url("http:api.baidu.com").targetFile(new File(FilesManager.getInstance()
+                .getPrivateExternalPath(FilesManager.DIR_EXTERNAL_DOWNLOAD) + fileName));
+        Downloader downloader = builder.build();
+        downloader.getDownloadCall().enqueue(new CallBack<Downloader.Result>() {
+            @Override
+            public void onFail(int code, String message) {
+//                if (Macro.IS_CATCH_LOG_ENABLE) {
+//                    BDLog.printStackTrace(new Throwable(message));
+//                }
+            }
+
+            @Override
+            public void onSuc(Downloader.Result response) {
+//                if (Macro.IS_CATCH_LOG_ENABLE) {
+//                    if(null != response){
+//                        BDLog.d("Sophie", response.toString());
+//                    }
+//                }
             }
         });
     }
